@@ -5,6 +5,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { NavLink } from 'react-router-dom';
 import { adddata, deldata } from './context/ContextProvider';
 import { updatedata } from './context/ContextProvider'
+import '../index.css';
+import Details from './Details';
 
 
 
@@ -12,17 +14,24 @@ import { updatedata } from './context/ContextProvider'
 const Home = () => {
 
     const [getuserdata, setUserdata] = useState([]);
+    const [search, setsearch] = useState("");
+   
     console.log(getuserdata);
 
     const { udata, setUdata } = useContext(adddata);
 
-    const {updata, setUPdata} = useContext(updatedata);
+    const { updata, setUPdata } = useContext(updatedata);
 
-    const {dltdata, setDLTdata} = useContext(deldata);
+    const { dltdata, setDLTdata } = useContext(deldata);
+
+
+
+    
+
 
     const getdata = async () => {
 
-        const res = await fetch("https://crudappreactjs.herokuapp.com/getdata", {
+        const res = await fetch("http://localhost:8003/getdata", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -37,10 +46,38 @@ const Home = () => {
 
         } else {
             setUserdata(data)
+            setFilterList(data);
             console.log("get data");
 
         }
     }
+
+    const [filterList, setFilterList] = useState(getuserdata);
+
+
+    const searchhanlder = (event) => {
+       
+
+     const data=event.target.value;
+    setsearch(data);
+
+    if (data === "") {
+        setFilterList(getuserdata);
+        return;
+    }
+    const filteredValues = getuserdata.filter(
+        (item) =>
+            item.name.toLowerCase().indexOf(event.target.value.toLowerCase()) !== -1
+    );
+    setFilterList(filteredValues);
+            
+
+    }
+
+
+
+
+
 
     useEffect(() => {
         getdata();
@@ -48,7 +85,7 @@ const Home = () => {
 
     const deleteuser = async (id) => {
 
-        const res2 = await fetch(`https://crudappreactjs.herokuapp.com/deleteuser/${id}`, {
+        const res2 = await fetch(`http://localhost:8003/deleteuser/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -102,51 +139,76 @@ const Home = () => {
             }
 
 
-            <div className="mt-5">
-                <div className="container">
-                    <div className="add_btn mt-2 mb-2">
-                        <NavLink to="/register" className="btn btn-primary">Add data</NavLink>
+
+            <div className='maincontainer'>
+
+                <div className="containerlist mt-5">
+
+                    <div className="row d-flex justify-content-flex-start">
+
+                        <div className="col-md-6">
+
+                            <div className="card">
+
+                                <div className="input-box">
+                                    <input type="text" onChange={searchhanlder} placeholder='Customers' className="form-control" />
+                                    <i className="fa fa-search"></i>
+                                    <i></i>
+                                </div>
+                                <div className="add_btn mt-2 mb-2">
+                                    <NavLink to="/register" className="btn btn-primary">Add data</NavLink>
+                                </div>
+
+
+
+                                {filterList &&
+                                    filterList.map((item, id) => {
+                                        return (
+                                            <>
+                                                <div className="list border-bottom">
+
+                                                    <i className="">
+                                                        <img src='https://th.bing.com/th/id/OIP.ymEUbl8s2t2yzvdNqwOCyAHaHa?pid=ImgDet&rs=1'></img>
+                                                    </i>
+                                                    <div className="d-flex flex-column ml-3">
+                                                        <span>{item.name}</span>
+                                                        <small>{item.email}</small>
+
+
+                                                    </div>
+                                                    <div className=''>
+                                                        <NavLink to={`view/${item._id}`}> <button className="btn btn-success"><RemoveRedEyeIcon /></button></NavLink>
+                                                    </div>
+
+                                                </div>
+                                            </>
+                                        )
+                                    })
+                                }
+                                
+
+                                    
+                            </div>
+                            
+
+                            
+                           
+                        
+                           
+
+                        </div>
+                        
+                         
+                       
+
                     </div>
-
-                    <table class="table">
-                        <thead>
-                            <tr className="table-dark">
-                                <th scope="col">id</th>
-                                <th scope="col">Username</th>
-                                <th scope="col">email</th>
-                                <th scope="col">Job</th>
-                                <th scope="col">Number</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            {
-                                getuserdata.map((element, id) => {
-                                    return (
-                                        <>
-                                            <tr>
-                                                <th scope="row">{id + 1}</th>
-                                                <td>{element.name}</td>
-                                                <td>{element.email}</td>
-                                                <td>{element.work}</td>
-                                                <td>{element.mobile}</td>
-                                                <td className="d-flex justify-content-between">
-                                                    <NavLink to={`view/${element._id}`}> <button className="btn btn-success"><RemoveRedEyeIcon /></button></NavLink>
-                                                    <NavLink to={`edit/${element._id}`}>  <button className="btn btn-primary"><CreateIcon /></button></NavLink>
-                                                    <button className="btn btn-danger" onClick={() => deleteuser(element._id)}><DeleteOutlineIcon /></button>
-                                                </td>
-                                            </tr>
-                                        </>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
-
+    
 
                 </div>
+                
             </div>
+
+
         </>
     )
 }

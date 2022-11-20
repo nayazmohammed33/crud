@@ -23,7 +23,7 @@ const Details = () => {
 
     const getdata = async () => {
 
-        const res = await fetch(`https://crudappreactjs.herokuapp.com/getuser/${id}`, {
+        const res = await fetch(`http://localhost:8003/getuser/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -48,7 +48,7 @@ const Details = () => {
 
     const deleteuser = async (id) => {
 
-        const res2 = await fetch(`https://crudappreactjs.herokuapp.com/deleteuser/${id}`, {
+        const res2 = await fetch(`http://localhost:8003/deleteuser/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -69,7 +69,7 @@ const Details = () => {
 
     return (
         <div className="container mt-3">
-            <h1 style={{ fontWeight: 400 }}>Welcome Harsh Pathak</h1>
+            <h1 style={{ fontWeight: 400 }}>Welcome </h1>
 
             <Card sx={{ maxWidth: 600 }}>
                 <CardContent>
